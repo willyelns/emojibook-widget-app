@@ -10,11 +10,11 @@ import SwiftUI
 
 struct Provider: TimelineProvider {
     func placeholder(in context: Context) -> SimpleEntry {
-        SimpleEntry(date: Date(), emojiDetails: EmojiProvider.random())
+        SimpleEntry(date: Date())
     }
 
     func getSnapshot(in context: Context, completion: @escaping (SimpleEntry) -> ()) {
-        let entry = SimpleEntry(date: Date(), emojiDetails: EmojiProvider.random())
+        let entry = SimpleEntry(date: Date())
         completion(entry)
     }
 
@@ -25,7 +25,7 @@ struct Provider: TimelineProvider {
         let currentDate = Date()
         for hourOffset in 0 ..< 5 {
             let entryDate = Calendar.current.date(byAdding: .hour, value: hourOffset, to: currentDate)!
-            let entry = SimpleEntry(date: entryDate, emojiDetails: EmojiProvider.random())
+            let entry = SimpleEntry(date: entryDate)
             entries.append(entry)
         }
 
@@ -39,33 +39,30 @@ struct SimpleEntry: TimelineEntry {
     public let emojiDetails: EmojiDetails
 }
 
-struct Emojibook_WidgetEntryView : View {
+struct Test_WidgetEntryView : View {
     var entry: Provider.Entry
 
     var body: some View {
-        EmojiWidgetView(emojiDetails: entry.emojiDetails)
+        Text(entry.date, style: .time)
     }
 }
 
 @main
-struct Emojibook_Widget: Widget {
+struct Test_Widget: Widget {
     let kind: String = "Test_Widget"
 
     var body: some WidgetConfiguration {
-        StaticConfiguration(
-            kind: kind,
-            provider: Provider()
-        ) { entry in
-            Emojibook_WidgetEntryView(entry: entry)
+        StaticConfiguration(kind: kind, provider: Provider()) { entry in
+            Test_WidgetEntryView(entry: entry)
         }
         .configurationDisplayName("My Widget")
         .description("This is an example widget.")
     }
 }
 
-struct Emojibook_Widget_Previews: PreviewProvider {
+struct Test_Widget_Previews: PreviewProvider {
     static var previews: some View {
-        Emojibook_WidgetEntryView(entry: SimpleEntry(date: Date(), emojiDetails: EmojiProvider.random()))
+        Test_WidgetEntryView(entry: SimpleEntry(date: Date()))
             .previewContext(WidgetPreviewContext(family: .systemSmall))
     }
 }
